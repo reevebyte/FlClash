@@ -214,14 +214,14 @@ Future<int> _package(
     runInShell: Platform.isWindows,
   );
 
-  process.stdout.listen((data) {
-    stdout.write(utf8.decode(data));
-  });
-  process.stderr.listen((data) {
-    stderr.write(utf8.decode(data));
-  });
+  decodeProcessOutput(process.stdout).listen(stdout.write);
+  decodeProcessOutput(process.stderr).listen(stderr.write);
   final exitCode = await process.exitCode;
   return exitCode;
+}
+
+Stream<String> decodeProcessOutput(Stream<List<int>> output) {
+  return output.transform(const Utf8Decoder(allowMalformed: true));
 }
 
 String _detectArch() {

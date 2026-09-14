@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:test/test.dart';
 
 import '../setup.dart' as setup;
@@ -70,6 +72,15 @@ hooks:
     test('downloads the appimagetool build matching the host', () {
       expect(setup.appImageToolArch('arm64'), 'aarch64');
       expect(setup.appImageToolArch('amd64'), 'x86_64');
+    });
+
+    test('decodes process output split across byte chunks', () async {
+      final bytes = utf8.encode('build 完成');
+      final output = Stream<List<int>>.fromIterable([
+        for (final byte in bytes) [byte],
+      ]);
+
+      expect(await setup.decodeProcessOutput(output).join(), 'build 完成');
     });
   });
 }
