@@ -180,6 +180,23 @@ void main() {
       expect(result, 'https://sub.example/x');
     });
 
+    testWidgets('a proxy link classified as text pops its raw value', (
+      tester,
+    ) async {
+      String? result;
+      await pumpScanPage(tester, onPopped: (value) => result = value);
+
+      platform.emit(
+        _capture(
+          type: BarcodeType.text,
+          rawValue: 'vless://id@example.com:443?security=tls#node',
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(result, 'vless://id@example.com:443?security=tls#node');
+    });
+
     testWidgets('a non-url barcode pops without a value', (tester) async {
       String? result = 'unset';
       var popped = false;

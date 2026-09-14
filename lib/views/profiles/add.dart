@@ -25,7 +25,7 @@ class AddProfileView extends ConsumerWidget {
     final url = await BaseNavigator.push(context, const ScanPage());
     if (url != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        unawaited(profilesAction.addProfileFormURL(url));
+        unawaited(profilesAction.addProfileFormInput(url));
       });
     }
   }
@@ -39,20 +39,21 @@ class AddProfileView extends ConsumerWidget {
         title: appLocalizations.importFromURL,
         labelText: appLocalizations.url,
         value: '',
-        inputFormatters: TextInputLimits.limit(TextInputLimits.url),
+        hintText: appLocalizations.profileImportTip,
+        inputFormatters: TextInputLimits.limit(TextInputLimits.profileImport),
         validator: (value) {
           if (value == null || value.isEmpty) {
             return appLocalizations.emptyTip('').trim();
           }
-          if (!value.isUrl) {
-            return appLocalizations.urlTip('').trim();
+          if (!isProfileImportInput(value)) {
+            return appLocalizations.profileImportTip;
           }
           return null;
         },
       ),
     );
     if (url != null) {
-      unawaited(profilesAction.addProfileFormURL(url));
+      unawaited(profilesAction.addProfileFormInput(url));
     }
   }
 
@@ -126,7 +127,9 @@ class _URLFormDialogState extends State<URLFormDialog> {
               keyboardType: TextInputType.url,
               minLines: 1,
               maxLines: 5,
-              inputFormatters: TextInputLimits.limit(TextInputLimits.url),
+              inputFormatters: TextInputLimits.limit(
+                TextInputLimits.profileImport,
+              ),
               onSubmitted: (_) {
                 _handleAddProfileFormURL();
               },

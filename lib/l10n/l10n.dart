@@ -535,10 +535,10 @@ class AppLocalizations {
     return Intl.message('URL', name: 'url', desc: '', args: []);
   }
 
-  /// `Obtain a profile from a URL`
+  /// `Obtain a profile from a URL or proxy links`
   String get urlDesc {
     return Intl.message(
-      'Obtain a profile from a URL',
+      'Obtain a profile from a URL or proxy links',
       name: 'urlDesc',
       desc: '',
       args: [],
@@ -660,10 +660,10 @@ class AppLocalizations {
     return Intl.message('Dark', name: 'dark', desc: '', args: []);
   }
 
-  /// `Import from URL`
+  /// `Import from URL or proxy links`
   String get importFromURL {
     return Intl.message(
-      'Import from URL',
+      'Import from URL or proxy links',
       name: 'importFromURL',
       desc: '',
       args: [],
@@ -2787,6 +2787,36 @@ class AppLocalizations {
       name: 'urlTip',
       desc: '',
       args: [label],
+    );
+  }
+
+  /// `Enter an HTTP(S) profile URL or supported proxy links`
+  String get profileImportTip {
+    return Intl.message(
+      'Enter an HTTP(S) profile URL or supported proxy links',
+      name: 'profileImportTip',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The proxy link on line {line} is invalid`
+  String invalidProxyLink(Object line) {
+    return Intl.message(
+      'The proxy link on line $line is invalid',
+      name: 'invalidProxyLink',
+      desc: '',
+      args: [line],
+    );
+  }
+
+  /// `Unsupported proxy link scheme: {scheme}`
+  String unsupportedProxyLink(Object scheme) {
+    return Intl.message(
+      'Unsupported proxy link scheme: $scheme',
+      name: 'unsupportedProxyLink',
+      desc: '',
+      args: [scheme],
     );
   }
 

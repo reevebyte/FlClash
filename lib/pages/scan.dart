@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:fl_clash/common/color.dart';
 import 'package:fl_clash/common/context.dart';
+import 'package:fl_clash/common/proxy_share.dart';
 import 'package:fl_clash/common/shape.dart';
 import 'package:fl_clash/providers/action.dart';
 import 'package:fl_clash/widgets/activate_box.dart';
@@ -40,8 +41,9 @@ class _ScanPageState extends ConsumerState<ScanPage>
       return;
     }
     final barcode = barcodeCapture.barcodes.first;
-    if (barcode.type == BarcodeType.url) {
-      Navigator.pop<String>(context, barcode.rawValue);
+    final value = barcode.rawValue;
+    if (value != null && isProfileImportInput(value)) {
+      Navigator.pop<String>(context, value);
     } else {
       Navigator.pop(context);
     }

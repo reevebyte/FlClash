@@ -50,7 +50,7 @@ class Picker {
       formats: [BarcodeFormat.qrCode],
     );
     final result = capture?.barcodes.first.rawValue;
-    if (result == null || !result.isUrl) {
+    if (result == null || !isProfileImportInput(result)) {
       throw MessageException(currentAppLocalizations.pleaseUploadValidQrcode);
     }
     return result;

@@ -5,6 +5,7 @@ abstract final class TextInputLimits {
   static const groupName = 64;
   static const url = 2048;
   static const uri = url;
+  static const profileImport = 64 * 1024;
   static const iconUrl = url;
   static const dnsServer = url;
   static const hostValue = url;

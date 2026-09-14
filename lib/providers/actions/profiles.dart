@@ -105,9 +105,8 @@ class ProfilesAction extends _$ProfilesAction {
     final profile = await globalState.loadingRun(
       tag: LoadingTag.profiles,
       () async {
-        return Profile.normal(
-          label: platformFile.name,
-        ).saveFile(bytes, validate: (path) => _core.validateConfig(path));
+        return Profile.normal(label: platformFile.name)
+            .saveFile(bytes, validate: (path) => _core.validateConfig(path));
       },
       title: currentAppLocalizations.addProfile,
     );
@@ -124,9 +123,45 @@ class ProfilesAction extends _$ProfilesAction {
     final profile = await globalState.loadingRun(
       tag: LoadingTag.profiles,
       () async {
-        return Profile.normal(
-          url: url,
-        ).update(validate: (path) => _core.validateConfig(path));
+        return Profile.normal(url: url)
+            .update(validate: (path) => _core.validateConfig(path));
+      },
+      title: currentAppLocalizations.addProfile,
+    );
+    if (profile != null) {
+      putProfile(profile);
+    }
+  }
+
+  Future<void> addProfileFormInput(String input) async {
+    final value = input.trim();
+    if (value.isUrl) {
+      await addProfileFormURL(value);
+      return;
+    }
+    if (globalState.navigatorKey.currentState?.canPop() ?? false) {
+      globalState.navigatorKey.currentState?.popUntil((route) => route.isFirst);
+    }
+    ref.read(currentPageLabelProvider.notifier).value = PageLabel.profiles;
+    final profile = await globalState.loadingRun(
+      tag: LoadingTag.profiles,
+      () async {
+        late final ({String label, String yaml}) imported;
+        try {
+          imported = parseProxyShareInput(value);
+        } on ProxyShareException catch (error) {
+          final message = switch (error.failure) {
+            ProxyShareFailure.invalid =>
+              currentAppLocalizations.invalidProxyLink(error.line),
+            ProxyShareFailure.unsupportedScheme =>
+              currentAppLocalizations.unsupportedProxyLink(error.scheme),
+          };
+          throw MessageException(message);
+        }
+        return Profile.normal(label: imported.label).saveFile(
+          Uint8List.fromList(utf8.encode(imported.yaml)),
+          validate: (path) => _core.validateConfig(path),
+        );
       },
       title: currentAppLocalizations.addProfile,
     );
@@ -145,7 +180,7 @@ class ProfilesAction extends _$ProfilesAction {
   Future<void> addProfileFormQrCode() async {
     final url = await globalState.safeRun(picker.pickerConfigQRCode);
     if (url == null) return;
-    unawaited(addProfileFormURL(url));
+    unawaited(addProfileFormInput(url));
   }
 
   void reorder(List<Profile> profiles) {
